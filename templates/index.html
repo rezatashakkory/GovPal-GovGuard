@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="EN" data-theme="night">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GovPal-GovGuard | AI Data Governance Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css?v={{ cache_bust }}" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════════════════════════════════ -->
+<div class="app-shell">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <span class="logo-text">GovPal</span>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav">
+      <button class="nav-btn nav-chat-btn active" id="chatNavBtn" data-nav="chat" title="Chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="chat-nav-status" id="chatNavStatus"></span>
+      </button>
+      <button class="nav-btn" data-nav="docs" title="Documents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </button>
+      <button class="nav-btn" data-nav="maturity" title="Governance Maturity">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </button>
+      <button class="nav-btn" data-nav="graph" title="Knowledge Graph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><line x1="7" y1="11" x2="17" y2="6"/><line x1="7" y1="13" x2="17" y2="18"/></svg>
+      </button>
+      <button class="nav-btn" data-nav="gap" title="Policy Gap Analyser">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      </button>
+      <button class="nav-btn" data-nav="audit" id="auditNavBtn" title="Audit Dashboard" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </button>
+      <button class="nav-btn" data-nav="settings" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </nav>
+
+    <!-- Status dot -->
+    <div class="sidebar-status" title="System online"></div>
+  </aside>
+
+  <!-- ── MAIN COLUMN ──────────────────────────────────────────────────── -->
+  <div class="main-col">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <svg class="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+        <span class="topbar-brand">GovPal-GovGuard</span>
+        <span class="topbar-badge">
+          <span class="badge-dot"></span>
+          AI Governance Assistant
+        </span>
+      </div>
+      <div class="topbar-right">
+        <!-- Theme toggle -->
+        <button class="theme-toggle" id="themeToggle" title="Switch to Day Mode">
+          <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <!-- Language toggle -->
+        <div class="lang-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lang-icon"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <button class="lang-btn active" data-lang="EN">EN</button>
+          <button class="lang-btn" data-lang="FR">FR</button>
+          <button class="lang-btn" data-lang="DE">DE</button>
+        </div>
+        <!-- Role badge (read-only — set by login credentials) -->
+        <div class="role-badge-static">
+          <span class="role-dot"></span>
+          <span class="role-label" id="roleBtnLabel">Analyst</span>
+        </div>
+        <!-- Connection indicator -->
+        <div class="conn-indicator">
+          <span class="conn-dot"></span>
+          <span class="conn-label" data-t="connected">Connected</span>
+        </div>
+        <!-- User info + sign-out -->
+        <div class="user-info" id="userInfo" style="display:none;">
+          <span class="user-name" id="topbarUserName"></span>
+          <button class="signout-btn" id="signoutBtn" title="Sign out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT ROW: chat + right panel -->
+    <div class="content-row">
+
+      <!-- CHAT AREA -->
+      <main class="chat-area">
+        <!-- Messages list -->
+        <div class="messages" id="messages">
+          <!-- Welcome screen (shown when empty) -->
+          <div class="welcome" id="welcome">
+            <div class="welcome-logo">
+              <div class="welcome-logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+            </div>
+            <h1 class="welcome-title">GovPal-GovGuard</h1>
+            <p class="welcome-tagline" data-t="tagline">Your AI-powered Data Governance Assistant</p>
+            <h2 class="welcome-q" data-t="welcomeTitle">How can I help you today?</h2>
+            <p class="welcome-sub" data-t="welcomeSubtitle">Ask me anything about governance policies, glossary terms, or data contracts.</p>
+            <div class="sample-prompts">
+              <button class="sample-chip" data-t="sampleQ1">What is the data retention policy?</button>
+              <button class="sample-chip" data-t="sampleQ2">Who owns the Customer Master Data?</button>
+              <button class="sample-chip" data-t="sampleQ3">What does PII mean in our glossary?</button>
+              <button class="sample-chip" data-t="sampleQ4">Show me the Finance Reporting data contract</button>
+            </div>
+            <p class="welcome-footer">Central Data Office · Governance Assistant · Phase 1 PoC</p>
+          </div>
+        </div>
+
+        <!-- Input bar -->
+        <div class="input-area">
+          <div class="input-bar-meta" id="inputMeta" style="display:none;">
+            <button class="clear-btn" id="clearBtn" data-t="clearChat">Clear chat</button>
+
+          </div>
+          <div class="input-bar" id="inputBar">
+            <textarea
+              id="chatInput"
+              rows="1"
+              data-t-placeholder="placeholder"
+              placeholder="Ask a data governance question in English, French, or German…"
+            ></textarea>
+            <button class="send-btn" id="sendBtn" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <p class="input-hint">Enter to send · Shift+Enter for new line · Powered by on-premise AI · Response may take 60–90 s</p>
+        </div>
+      </main>
+
+      <!-- POLICY GAP ANALYSER VIEW -->
+      <div class="gap-view" id="gapView" style="display:none;">
+        <div class="gap-topbar">
+          <div class="gap-topbar-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--orange);flex-shrink:0"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            <div>
+              <p class="gap-topbar-title">Policy Gap Analyser</p>
+              <p class="gap-topbar-sub">Paste any governance document to score it against 6 key dimensions</p>
+            </div>
+          </div>
+          <div class="gap-topbar-right">
+            <div class="gap-live-badge" id="gapLiveBadge" hidden>
+              <span class="live-dot"></span>LIVE
+            </div>
+            <div class="gap-overall-wrap" id="gapOverallWrap" style="display:none;">
+              <span class="gap-overall-label">Overall</span>
+              <span class="gap-overall-val" id="gapOverallVal">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="gap-body">
+          <div class="gap-input-section">
+            <input type="text" id="gapTitle" class="gap-title-input" placeholder="Document title (optional)…" />
+            <div class="gap-upload-row">
+              <label class="gap-upload-btn" for="gapFileInput">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload PDF / DOCX / TXT
+              </label>
+              <input type="file" id="gapFileInput" accept=".pdf,.docx,.txt" style="display:none">
+              <span class="gap-file-name" id="gapFileName"></span>
+              <button class="gap-file-clear" id="gapFileClear" hidden title="Remove file">×</button>
+            </div>
+            <textarea id="gapText" class="gap-textarea" placeholder="Paste or upload a governance policy, contract, or procedure document…"></textarea>
+            <button class="gap-analyse-btn" id="gapAnalyseBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Analyse Document
+            </button>
+          </div>
+          <div class="gap-results" id="gapResults" hidden>
+            <p class="gap-results-title" id="gapResultsTitle"></p>
+            <p class="gap-disclaimer-note" data-t="gapDisclaimerText"></p>
+            <div class="gap-dim-list" id="gapDimList"></div>
+            <div class="gap-gaps-block" id="gapGapsBlock" hidden>
+              <p class="gap-gaps-label">Coverage Gaps Detected</p>
+              <div class="gap-gaps-list" id="gapGapsList"></div>
+            </div>
+            <div class="gap-suggest-block" id="gapSuggestBlock" hidden>
+              <p class="gap-suggest-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Suggested Remediation Actions
+              </p>
+              <div id="gapSuggestList"></div>
+            </div>
+            <div class="gap-draft-block" id="gapDraftBlock" hidden>
+              <p class="gap-draft-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                AI Policy Clause Drafter
+              </p>
+              <p class="gap-draft-sub">Auto-generated template clauses for each coverage gap — copy &amp; adapt:</p>
+              <div id="gapDraftList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIT DASHBOARD VIEW (Manager / Partner only) -->
+      <div class="settings-full-view" id="auditView" style="display:none;">
+        <div class="settings-view-topbar">
+          <div class="settings-view-topbar-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--orange);flex-shrink:0"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <div>
+              <p class="settings-view-title">Audit Dashboard</p>
+              <p class="settings-view-sub">Live query audit trail · queries are PII-masked then SHA-256 hashed · Manager/Partner only</p>
+            </div>
+          </div>
+        </div>
+        <div class="settings-view-body">
+          <div class="settings-view-card">
+            <p class="svc-title">Summary</p>
+            <p class="svc-desc">Aggregate statistics from the live audit log (last 90 days, auto-purged).</p>
+            <div class="kb-stats" style="margin-top:12px;">
+              <div class="kb-stat"><span class="kb-num" id="auditStatTotal">—</span><span class="kb-lbl">Total Queries</span></div>
+              <div class="kb-stat"><span class="kb-num" id="auditStatPii">—</span><span class="kb-lbl">PII Flagged</span></div>
+              <div class="kb-stat"><span class="kb-num" id="auditStatNoAnswer">—</span><span class="kb-lbl">No Answer</span></div>
+            </div>
+          </div>
+          <div class="settings-view-card" style="grid-column:1 / -1;">
+            <p class="svc-title">Recent Entries</p>
+            <p class="svc-desc">Raw query text is never stored — only a SHA-256 hash computed after PII masking.</p>
+            <div id="auditDashList" style="margin-top:12px;max-height:420px;overflow:auto;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GOVERNANCE MATURITY VIEW -->
+      <div class="maturity-view" id="maturityView" style="display:none;">
+        <div class="maturity-topbar">
+          <div class="maturity-topbar-left">
+            <div class="maturity-topbar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div>
+              <p class="maturity-topbar-title">Governance Maturity Dashboard</p>
+              <p class="maturity-topbar-sub">Central Data Office · Radar · Heatmap · Regulatory Calendar</p>
+            </div>
+          </div>
+          <div class="maturity-score-badge">
+            <span class="msb-label">Avg Maturity</span>
+            <span class="msb-val" id="maturityAvgVal">2.8</span>
+            <span class="msb-max">&thinsp;/&thinsp;5</span>
+          </div>
+          <button class="gen-report-btn" id="genReportBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Generate CDO Report
+          </button>
+        </div>
+
+        <!-- SESSION ANALYTICS STRIP -->
+        <div class="analytics-strip">
+          <div class="analytics-strip-row">
+            <div class="kpi-card">
+              <span class="kpi-val" id="kpiTotal">0</span>
+              <span class="kpi-label">Queries This Session</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-val" id="kpiConf">—</span>
+              <span class="kpi-label">Avg Confidence</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-val" id="kpiRestricted">0</span>
+              <span class="kpi-label">Restricted Hits</span>
+            </div>
+            <div class="kpi-card kpi-card--highlight">
+              <span class="kpi-val">18<span class="kpi-denom">/18</span></span>
+              <span class="kpi-label">Policies Indexed</span>
+            </div>
+          </div>
+          <div class="analytics-dist-row">
+            <span class="analytics-dist-label">Query distribution</span>
+            <div class="analytics-dist-bars">
+              <div class="dist-bar-wrap">
+                <span class="dist-bar-name">Policy</span>
+                <div class="dist-bar-track"><div class="dist-bar-fill dist-policy" id="distPolicyBar" style="width:60%"></div></div>
+                <span class="dist-bar-pct" id="distPolicyPct">60%</span>
+              </div>
+              <div class="dist-bar-wrap">
+                <span class="dist-bar-name">Glossary</span>
+                <div class="dist-bar-track"><div class="dist-bar-fill dist-glossary" id="distGlossaryBar" style="width:25%"></div></div>
+                <span class="dist-bar-pct" id="distGlossaryPct">25%</span>
+              </div>
+              <div class="dist-bar-wrap">
+                <span class="dist-bar-name">Contracts</span>
+                <div class="dist-bar-track"><div class="dist-bar-fill dist-contract" id="distContractBar" style="width:15%"></div></div>
+                <span class="dist-bar-pct" id="distContractPct">15%</span>
+              </div>
+            </div>
+          </div>
+          <div class="analytics-dist-row">
+            <span class="analytics-dist-label" style="white-space:normal;max-width:70px;">Governance health <span style="display:block;font-size:9px;color:var(--text-400);font-style:italic;">Illustrative · Phase 2</span></span>
+            <div class="analytics-dist-bars">
+              <div class="dist-bar-wrap"><span class="dist-bar-name">Data Quality</span><div class="dist-bar-track"><div class="dist-bar-fill" style="width:72%;background:#10b981;"></div></div><span class="dist-bar-pct" style="color:#10b981;">72%</span></div>
+              <div class="dist-bar-wrap"><span class="dist-bar-name">Lineage</span><div class="dist-bar-track"><div class="dist-bar-fill" style="width:58%;background:#3b82f6;"></div></div><span class="dist-bar-pct" style="color:#3b82f6;">58%</span></div>
+              <div class="dist-bar-wrap"><span class="dist-bar-name">Ownership</span><div class="dist-bar-track"><div class="dist-bar-fill" style="width:85%;background:#10b981;"></div></div><span class="dist-bar-pct" style="color:#10b981;">85%</span></div>
+              <div class="dist-bar-wrap"><span class="dist-bar-name">Compliance</span><div class="dist-bar-track"><div class="dist-bar-fill" style="width:64%;background:#f59e0b;"></div></div><span class="dist-bar-pct" style="color:#f59e0b;">64%</span></div>
+              <div class="dist-bar-wrap"><span class="dist-bar-name">Encryption</span><div class="dist-bar-track"><div class="dist-bar-fill" style="width:91%;background:#10b981;"></div></div><span class="dist-bar-pct" style="color:#10b981;">91%</span></div>
+              <div class="dist-bar-wrap"><span class="dist-bar-name">Retention</span><div class="dist-bar-track"><div class="dist-bar-fill" style="width:47%;background:#ef4444;"></div></div><span class="dist-bar-pct" style="color:#ef4444;">47%</span></div>
+              <div class="dist-bar-wrap"><span class="dist-bar-name">Audit Trail</span><div class="dist-bar-track"><div class="dist-bar-fill" style="width:79%;background:#10b981;"></div></div><span class="dist-bar-pct" style="color:#10b981;">79%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="maturity-body">
+          <!-- LEFT COLUMN: radar + regulation calendar -->
+          <div class="maturity-col-left">
+            <div class="maturity-card">
+              <div class="mc-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--orange)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Maturity Radar — 6 Dimensions</span>
+                <span class="mc-chip" id="maturityChip">Avg 2.8&thinsp;/&thinsp;5</span>
+              </div>
+              <div class="radar-wrap">
+                <canvas id="radarCanvas"></canvas>
+              </div>
+              <div class="radar-legend" id="radarLegend"></div>
+            </div>
+            <div class="maturity-card">
+              <div class="mc-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--orange)"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>Regulatory Calendar 2025–2027</span>
+              </div>
+              <div class="reg-timeline" id="regTimeline"></div>
+            </div>
+          </div>
+          <!-- RIGHT COLUMN: heatmap -->
+          <div class="maturity-col-right">
+            <div class="maturity-card maturity-card-full">
+              <div class="mc-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--orange)"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>Domain Coverage Heatmap — 6 × 6</span>
+                <span class="mc-chip">Click cell for detail</span>
+              </div>
+              <div class="heatmap-container" id="heatmapContainer"></div>
+              <div class="heatmap-scale">
+                <span style="color:#ef4444;font-size:10px;font-weight:600">0% Gap</span>
+                <div class="heatmap-scale-bar"></div>
+                <span style="color:#10b981;font-size:10px;font-weight:600">100% Covered</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KNOWLEDGE GRAPH VIEW -->
+      <div class="graph-view" id="graphView" style="display:none;">
+        <div class="graph-topbar">
+          <div class="graph-topbar-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--orange);flex-shrink:0"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><line x1="7" y1="11" x2="17" y2="6"/><line x1="7" y1="13" x2="17" y2="18"/></svg>
+            <div>
+              <p class="graph-topbar-title">Data Entity Knowledge Graph</p>
+              <p class="graph-topbar-sub">Central Data Office · Governance Relationships · Click a node to explore</p>
+            </div>
+          </div>
+          <div class="graph-topbar-right">
+            <span class="graph-stat"><span class="graph-stat-val" id="gStatNodes">—</span><span class="graph-stat-lbl">Entities</span></span>
+            <span class="graph-stat"><span class="graph-stat-val" id="gStatEdges">—</span><span class="graph-stat-lbl">Relations</span></span>
+          </div>
+        </div>
+        <div class="graph-canvas-wrap">
+          <canvas id="graphCanvas"></canvas>
+          <div class="graph-loading" id="graphLoading">
+            <div class="graph-loading-pulse"></div>
+            <p>Loading knowledge graph…</p>
+          </div>
+        </div>
+        <div class="graph-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#ff6f00;box-shadow:0 0 6px #ff6f0066"></span>Client</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#3b82f6;box-shadow:0 0 6px #3b82f666"></span>Engagement</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#10b981;box-shadow:0 0 6px #10b98166"></span>Partner</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b66"></span>Regulator</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6;box-shadow:0 0 6px #8b5cf666"></span>Policy</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#06b6d4;box-shadow:0 0 6px #06b6d466"></span>Team</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#ec4899;box-shadow:0 0 6px #ec489966"></span>Domain</span>
+          <span class="legend-item legend-hint">Drag to pin · Click to inspect</span>
+        </div>
+        <div class="graph-filters" id="graphFilters">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="Client">Client</button>
+          <button class="filter-chip" data-filter="Engagement">Engagement</button>
+          <button class="filter-chip" data-filter="Partner">Partner</button>
+          <button class="filter-chip" data-filter="Regulator">Regulator</button>
+          <button class="filter-chip" data-filter="Policy">Policy</button>
+          <button class="filter-chip" data-filter="Team">Team</button>
+          <button class="filter-chip" data-filter="Domain">Domain</button>
+        </div>
+      </div>
+
+      <!-- SETTINGS FULL-PAGE VIEW -->
+      <div class="settings-full-view" id="settingsView" style="display:none;">
+        <div class="settings-view-topbar">
+          <div class="settings-view-topbar-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--orange);flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <div>
+              <p class="settings-view-title">Settings</p>
+              <p class="settings-view-sub">Application configuration · Central Data Office</p>
+            </div>
+          </div>
+        </div>
+        <div class="settings-view-body">
+          <!-- Language card -->
+          <div class="settings-view-card">
+            <p class="svc-title">Language</p>
+            <p class="svc-desc">Select the interface and response language.</p>
+            <div class="settings-lang-btns" id="settingsLangBtns" style="margin-top:12px;">
+              <button class="settings-lang-btn active" data-lang="EN">EN</button>
+              <button class="settings-lang-btn" data-lang="FR">FR</button>
+              <button class="settings-lang-btn" data-lang="DE">DE</button>
+            </div>
+          </div>
+          <!-- Knowledge Base card -->
+          <div class="settings-view-card">
+            <p class="svc-title">Knowledge Base</p>
+            <p class="svc-desc">Documents indexed in ChromaDB and available to the AI.</p>
+            <div class="kb-stats" style="margin-top:12px;">
+              <div class="kb-stat"><span class="kb-num">6</span><span class="kb-lbl">Policies</span></div>
+              <div class="kb-stat"><span class="kb-num">6</span><span class="kb-lbl">Glossary</span></div>
+              <div class="kb-stat"><span class="kb-num">6</span><span class="kb-lbl">Contracts</span></div>
+            </div>
+            <p class="svc-note">147 chunks · Vector similarity search · RBAC-filtered by role</p>
+          </div>
+          <!-- Access card -->
+          <div class="settings-view-card">
+            <p class="svc-title">Access Levels</p>
+            <p class="svc-desc">Role-based access controls what documents you can query.</p>
+            <div class="svc-role-list" style="margin-top:12px;">
+              <div class="svc-role-row"><span class="cls-badge cls-PUBLIC" style="font-size:10px;">PUBLIC</span><span class="svc-role-desc">Analyst · Manager · Partner</span></div>
+              <div class="svc-role-row"><span class="cls-badge cls-INTERNAL" style="font-size:10px;">INTERNAL</span><span class="svc-role-desc">Analyst · Manager · Partner</span></div>
+              <div class="svc-role-row"><span class="cls-badge cls-CONFIDENTIAL" style="font-size:10px;">CONFIDENTIAL</span><span class="svc-role-desc">Manager · Partner only</span></div>
+              <div class="svc-role-row"><span class="cls-badge cls-RESTRICTED" style="font-size:10px;">RESTRICTED</span><span class="svc-role-desc">Partner only</span></div>
+            </div>
+          </div>
+          <!-- About card -->
+          <div class="settings-view-card">
+            <p class="svc-title">About</p>
+            <p class="svc-desc">System information and technical stack.</p>
+            <div class="about-block" style="margin-top:12px;">
+              <div class="about-row"><span>Version</span><span class="about-val">Phase 1 PoC</span></div>
+              <div class="about-row"><span>Office</span><span class="about-val">Central Data Office</span></div>
+              <div class="about-row"><span>Retrieval</span><span class="about-val">RAG + Vector + RBAC</span></div>
+              <div class="about-row"><span>LLM</span><span class="about-val">Ollama · on-premise</span></div>
+              <div class="about-row"><span>Vector DB</span><span class="about-val">ChromaDB</span></div>
+              <div class="about-row"><span>Backend</span><span class="about-val">FastAPI + Python</span></div>
+              <div class="about-row"><span>Built</span><span class="about-val">2026</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS FULL-PAGE VIEW -->
+      <div class="docs-full-view" id="docsFullView" style="display:none;">
+        <div class="docs-topbar">
+          <div class="docs-topbar-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--orange);flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <div>
+              <p class="docs-topbar-title">Document Library</p>
+              <p class="docs-topbar-sub">All governance documents accessible to your role</p>
+            </div>
+          </div>
+          <div class="docs-topbar-right">
+            <span class="docs-count-badge" id="docsCountBadge">— docs</span>
+            <div class="docs-search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-300);pointer-events:none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="docsSearchInput" class="docs-search-input" placeholder="Search documents…" />
+            </div>
+          </div>
+        </div>
+        <div class="docs-filter-row" id="docsFilterRow">
+          <button class="docs-filter-chip active" data-cls="ALL">All</button>
+          <button class="docs-filter-chip chip-public"         data-cls="PUBLIC">PUBLIC</button>
+          <button class="docs-filter-chip chip-internal"       data-cls="INTERNAL">INTERNAL</button>
+          <button class="docs-filter-chip chip-confidential"   data-cls="CONFIDENTIAL">CONFIDENTIAL</button>
+          <button class="docs-filter-chip chip-restricted"     data-cls="RESTRICTED">RESTRICTED</button>
+        </div>
+        <div class="docs-grid" id="docsGrid">
+          <div class="docs-loading" id="docsLoading">
+            <div class="graph-loading-pulse"></div>
+            <p>Loading documents…</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <aside class="right-panel" id="rightPanel">
+        <div class="rp-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rp-header-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="rp-header-title" data-t="rightPanelTitle">Document Preview</span>
+        </div>
+        <div class="rp-body" id="rpBody">
+
+          <!-- Doc preview (hidden until card is clicked) -->
+          <div id="docPreview" hidden>
+            <div class="doc-card">
+              <div class="doc-card-header">
+                <div class="doc-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div>
+                  <p class="doc-title" id="rpDocTitle"></p>
+                  <p class="doc-id" id="rpDocId"></p>
+                </div>
+              </div>
+              <span class="cls-badge" id="rpDocCls"></span>
+            </div>
+            <div class="doc-meta-list">
+              <div class="doc-meta-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <div><p class="meta-label" data-t="ownerLabel">Data Owner</p><p class="meta-value" id="rpDocOwner"></p></div>
+              </div>
+              <div class="doc-meta-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <div><p class="meta-label" data-t="dateLabel">Last Updated</p><p class="meta-value" id="rpDocDate"></p></div>
+              </div>
+              <div class="doc-meta-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <div><p class="meta-label" data-t="category">Category</p><p class="meta-value" id="rpDocCat"></p></div>
+              </div>
+            </div>
+            <!-- Confidence bar -->
+            <div class="rp-conf-block">
+              <div class="rp-conf-row">
+                <span class="meta-label" data-t="confidenceLabel" data-t-title="confidenceTooltip">Confidence</span>
+                <span class="rp-conf-val" id="rpDocConf"></span>
+              </div>
+              <div class="rp-conf-track"><div class="rp-conf-bar" id="rpDocConfBar"></div></div>
+            </div>
+            <!-- Tags -->
+            <div id="rpTagsBlock">
+              <p class="meta-label" data-t="tags" style="margin-bottom:8px;">Tags</p>
+              <div class="tags-wrap" id="rpDocTags"></div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div class="rp-empty" id="rpEmpty">
+            <div class="rp-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <p data-t="rightPanelEmpty">Click any response card to preview the source document here.</p>
+          </div>
+
+          <!-- Document library list (hidden unless docs nav active) -->
+          <div id="docListPanel" hidden>
+            <p class="rp-section-title">Document Library</p>
+            <p class="doc-list-count" id="docListCount"></p>
+            <div id="docListItems"></div>
+          </div>
+
+          <!-- Analytics panel (hidden unless analytics nav active) -->
+          <div id="analyticsPanel" hidden>
+            <p class="rp-section-title" data-t="analyticsTitle">Governance Analytics</p>
+            <div class="kpi-grid">
+              <div class="kpi-card"><p class="kpi-label">Queries Today</p><p class="kpi-value" id="kpiTotal">0</p></div>
+              <div class="kpi-card"><p class="kpi-label">Avg Confidence</p><p class="kpi-value" id="kpiConf">—</p></div>
+              <div class="kpi-card"><p class="kpi-label">Policies Covered</p><p class="kpi-value">18/18</p></div>
+              <div class="kpi-card"><p class="kpi-label">Restricted Hits</p><p class="kpi-value" id="kpiRestricted">0</p></div>
+            </div>
+            <p class="meta-label" data-t="queryDist" style="margin:16px 0 8px;">Query Distribution</p>
+            <div class="dist-row"><span class="dist-label">Policy</span><div class="dist-track"><div class="dist-bar" id="distPolicyBar" style="width:0%;background:var(--orange)"></div></div><span class="dist-pct" id="distPolicyPct">0%</span></div>
+            <div class="dist-row"><span class="dist-label">Glossary</span><div class="dist-track"><div class="dist-bar" id="distGlossaryBar" style="width:0%;background:#3b82f6"></div></div><span class="dist-pct" id="distGlossaryPct">0%</span></div>
+            <div class="dist-row"><span class="dist-label">Contracts</span><div class="dist-track"><div class="dist-bar" id="distContractBar" style="width:0%;background:#10b981"></div></div><span class="dist-pct" id="distContractPct">0%</span></div>
+            <p class="meta-label" data-t="govHealth" style="margin:20px 0 8px;">Governance Health</p>
+            <div class="health-bars">
+              <div class="health-bar" style="height:65%"></div>
+              <div class="health-bar" style="height:72%"></div>
+              <div class="health-bar" style="height:80%"></div>
+              <div class="health-bar" style="height:68%"></div>
+              <div class="health-bar" style="height:90%"></div>
+              <div class="health-bar" style="height:85%"></div>
+              <div class="health-bar" style="height:94%"></div>
+            </div>
+            <p class="meta-label" data-t="last7" style="margin-top:6px;text-align:right;">Last 7 days</p>
+          </div>
+
+          <!-- Graph node info (shown when graph nav + node selected) -->
+          <div id="graphNodeInfo" hidden>
+            <div class="graph-node-card-rp">
+              <div id="gnBadge" style="margin-bottom:6px;"></div>
+              <p class="graph-node-title-rp" id="gnLabel"></p>
+              <p class="graph-node-id-rp" id="gnId"></p>
+            </div>
+            <div class="doc-meta-list" style="margin-top:10px;">
+              <div class="doc-meta-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div><p class="meta-label">Type</p><p class="meta-value" id="gnType"></p></div>
+              </div>
+              <div class="doc-meta-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <div><p class="meta-label">Description</p><p class="meta-value" id="gnDesc"></p></div>
+              </div>
+            </div>
+            <div id="gnLineage" hidden>
+              <p class="rp-section-title" style="margin:14px 0 6px;">Connections</p>
+              <div id="gnConnectionsList"></div>
+              <p class="rp-section-title" style="margin:14px 0 6px;">Linked Documents</p>
+              <div id="gnLineageList"></div>
+              <p id="gnLineageEmpty" hidden style="font-size:11px;color:var(--text-400);padding:6px 0;">No documents reference this entity.</p>
+            </div>
+            <p style="font-size:11px;color:var(--text-400);text-align:center;padding:12px 0;line-height:1.6;">Click another node to compare, or switch to the chat to ask GovPal about this entity.</p>
+          </div>
+
+          <!-- Graph empty state -->
+          <div id="graphEmptyState" hidden>
+            <div class="rp-empty">
+              <div class="rp-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><line x1="7" y1="11" x2="17" y2="6"/><line x1="7" y1="13" x2="17" y2="18"/></svg>
+              </div>
+              <p>Click any node in the graph to inspect its governance details here.</p>
+            </div>
+          </div>
+
+          <!-- Settings panel -->
+          <div id="settingsPanel" hidden>
+            <div class="settings-divider"></div>
+            <p class="rp-section-title" style="margin-bottom:10px;">Knowledge Base</p>
+            <div class="kb-stats">
+              <div class="kb-stat"><span class="kb-num">6</span><span class="kb-lbl">Policies</span></div>
+              <div class="kb-stat"><span class="kb-num">6</span><span class="kb-lbl">Glossary</span></div>
+              <div class="kb-stat"><span class="kb-num">6</span><span class="kb-lbl">Contracts</span></div>
+            </div>
+            <div class="settings-divider"></div>
+            <p class="rp-section-title" style="margin-bottom:10px;">About</p>
+            <div class="about-block">
+              <div class="about-row"><span>Version</span><span class="about-val">Phase 1 PoC</span></div>
+              <div class="about-row"><span>Office</span><span class="about-val">Central Data Office</span></div>
+              <div class="about-row"><span>Retrieval</span><span class="about-val">RAG + Vector + RBAC</span></div>
+              <div class="about-row"><span>Built</span><span class="about-val">2026</span></div>
+            </div>
+          </div>
+
+          <!-- Audit trail -->
+          <div id="auditBlock">
+            <div class="audit-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span data-t="auditTitle">Recent Activity</span>
+              <button class="export-btn" id="exportAuditBtn" title="Export PDF">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+              </button>
+            </div>
+            <div class="audit-list" id="auditList">
+              <p class="audit-empty" data-t="auditEmpty">No activity yet</p>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+    </div><!-- /content-row -->
+  </div><!-- /main-col -->
+</div><!-- /app-shell -->
+
+<!-- ── LOGIN MODAL ──────────────────────────────────────────────────────── -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-modal">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <h2 class="login-title">GovPal-GovGuard</h2>
+    <p class="login-subtitle">Sign in to access the Data Governance Assistant</p>
+    <form class="login-form" id="loginForm" autocomplete="off">
+      <div class="login-field">
+        <label class="login-label" for="loginEmail">Email</label>
+        <input class="login-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="username" required />
+      </div>
+      <div class="login-field">
+        <label class="login-label" for="loginPassword">Password</label>
+        <input class="login-input" id="loginPassword" type="password" placeholder="••••••••••" autocomplete="current-password" required />
+      </div>
+      <p class="login-error" id="loginError" style="display:none;"></p>
+      <button class="login-btn" type="submit" id="loginSubmit">Sign In</button>
+    </form>
+    <div class="login-demo-box">
+      <p class="login-demo-title">Demo Accounts</p>
+      <table class="login-demo-table">
+        <tr><td>analyst@example.com</td><td>Analyst123!</td><td class="login-demo-role analyst-role">Analyst</td></tr>
+        <tr><td>manager@example.com</td><td>Manager123!</td><td class="login-demo-role manager-role">Manager</td></tr>
+        <tr><td>partner@example.com</td><td>Partner123!</td><td class="login-demo-role partner-role">Partner</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Embed translations for JS -->
+<script>
+  window.__TRANSLATIONS__ = {{ translations | tojson }};
+</script>
+<script src="/static/js/app.js?v={{ cache_bust }}"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "2.0.0",
+  "id": "a3f7b2c1-4e5d-4f8a-b9c0-d1e2f3a4b5c6",
+  "developer": {
+    "name": "Nexum Financial S.A. – Central Data Office",
+    "websiteUrl": "https://govguard.nexum.lu",
+    "privacyUrl": "https://govguard.nexum.lu/privacy",
+    "termsOfUseUrl": "https://govguard.nexum.lu/terms"
+  },
+  "name": {
+    "short": "GovGuard",
+    "full": "GovPal-GovGuard: AI Data Governance Assistant"
+  },
+  "description": {
+    "short": "AI governance assistant for the CDO team",
+    "full": "GovGuard is a GDPR-compliant, RAG-based chatbot serving the Nexum Financial S.A. Central Data Office. It answers governance questions, runs policy gap analysis, traverses the data governance knowledge graph, and tracks data lineage — all protected by role-based access control."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#ff6f00",
+  "copilotAgents": {
+    "declarativeCopilots": [
+      {
+        "id": "govguard-declarative-agent",
+        "file": "declarative-agent.json"
+      }
+    ]
+  },
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": [
+    "govguard.nexum.lu",
+    "127.0.0.1:8000",
+    "localhost:8000"
+  ],
+  "authorization": {
+    "permissions": {
+      "resourceSpecific": []
+    }
+  }
+}

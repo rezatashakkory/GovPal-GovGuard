@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.env
+.env.local
+.venv/
+venv/
+__pycache__/
+*.pyc
+data/chroma_db/
+data/audit.db
+*.log
+uvicorn_log.txt
+.DS_Store
+Thumbs.db
+
+# Thesis / presentation / branding assets - not part of the code project
+Final Report/
+logo/
+
+# Word lock/temp files
+~$*
+*.tmp
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/

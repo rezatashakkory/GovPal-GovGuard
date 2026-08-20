@@ -1,0 +1,151 @@
+clients:
+- id: Client_ACME
+  label: ACME S.A.
+- id: Client_BLUE
+  label: Blue Holding S.à r.l.
+- id: Client_NOVEX
+  label: Novex Capital S.A.
+engagements:
+- id: ENG_2026_AUDIT
+  label: Audit FY26
+- id: ENG_2026_DATA
+  label: Data Advisory
+- id: ENG_SIM_Client_BLUE
+  label: Simulated Engagement for Client_BLUE
+- id: ENG_2026_GDPR
+  label: GDPR Compliance Review
+- id: ENG_2026_RISK
+  label: Risk Data Aggregation
+partners:
+- id: Partner_JD
+  label: John Doe
+- id: Partner_AM
+  label: Anne Martin
+regulators:
+- id: Reg_CSSF
+  label: CSSF
+- id: Reg_CNPD
+  label: CNPD
+- id: Reg_EBA
+  label: EBA
+policies:
+- id: Policy_DataRetention
+  label: Data Retention Policy
+- id: Policy_DataClassification
+  label: Data Classification Framework
+- id: Policy_PersonalData
+  label: Personal Data Processing Policy
+- id: Policy_AccessControl
+  label: Access Control Policy
+- id: Policy_AIGovernance
+  label: AI Model Governance Policy
+teams:
+- id: Team_CDO
+  label: Central Data Office
+- id: Team_CISO
+  label: Information Security Office
+- id: Team_DPO
+  label: Data Protection Office
+domains:
+- id: Domain_Finance
+  label: Finance Data Domain
+- id: Domain_Risk
+  label: Risk Data Domain
+- id: Domain_HR
+  label: HR & People Data Domain
+- id: Domain_Client
+  label: Client Master Data Domain
+relations:
+- - Client_ACME
+  - HAS_ENGAGEMENT
+  - ENG_2026_AUDIT
+- - ENG_2026_AUDIT
+  - ENGAGEMENT_OF
+  - Client_ACME
+- - Client_ACME
+  - SERVED_BY
+  - Partner_JD
+- - Client_ACME
+  - SUBJECT_TO
+  - Reg_CSSF
+- - Client_ACME
+  - HAS_ENGAGEMENT
+  - ENG_2026_DATA
+- - Client_BLUE
+  - HAS_ENGAGEMENT
+  - ENG_SIM_Client_BLUE
+- - ENG_SIM_Client_BLUE
+  - ENGAGEMENT_OF
+  - Client_BLUE
+- - Client_NOVEX
+  - HAS_ENGAGEMENT
+  - ENG_2026_GDPR
+- - ENG_2026_GDPR
+  - ENGAGEMENT_OF
+  - Client_NOVEX
+- - Client_NOVEX
+  - SERVED_BY
+  - Partner_AM
+- - Client_NOVEX
+  - SUBJECT_TO
+  - Reg_CNPD
+- - Client_ACME
+  - SUBJECT_TO
+  - Reg_EBA
+- - Domain_Finance
+  - GOVERNED_BY
+  - Team_CDO
+- - Domain_Risk
+  - GOVERNED_BY
+  - Team_CDO
+- - Domain_HR
+  - GOVERNED_BY
+  - Team_DPO
+- - Domain_Client
+  - GOVERNED_BY
+  - Team_CDO
+- - Policy_DataRetention
+  - ENFORCED_BY
+  - Team_CDO
+- - Policy_PersonalData
+  - ENFORCED_BY
+  - Team_DPO
+- - Policy_AccessControl
+  - ENFORCED_BY
+  - Team_CISO
+- - Policy_AIGovernance
+  - ENFORCED_BY
+  - Team_CDO
+- - Policy_DataRetention
+  - APPLIES_TO
+  - Domain_Finance
+- - Policy_DataRetention
+  - APPLIES_TO
+  - Domain_HR
+- - Policy_PersonalData
+  - APPLIES_TO
+  - Domain_HR
+- - Policy_PersonalData
+  - APPLIES_TO
+  - Domain_Client
+- - Policy_AccessControl
+  - APPLIES_TO
+  - Domain_Finance
+- - Policy_AccessControl
+  - APPLIES_TO
+  - Domain_Risk
+- - Reg_CSSF
+  - OVERSEES
+  - Domain_Finance
+- - Reg_CSSF
+  - OVERSEES
+  - Domain_Risk
+- - Reg_CNPD
+  - OVERSEES
+  - Domain_HR
+- - Reg_CNPD
+  - OVERSEES
+  - Domain_Client
+- - Reg_EBA
+  - OVERSEES
+  - Domain_Risk

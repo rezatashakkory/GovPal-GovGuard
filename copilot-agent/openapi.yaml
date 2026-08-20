@@ -1,0 +1,269 @@
+openapi: 3.0.3
+info:
+  title: GovPal-GovGuard API
+  description: >
+    AI-powered Data Governance assistant for the Central Data Office (CDO) at Nexum Financial S.A.
+    Provides intelligent Q&A on governance policies, glossary terms, and data contracts,
+    with RBAC, data lineage traversal, policy gap analysis, and knowledge graph access.
+  version: "2.0.0"
+  contact:
+    name: Central Data Office
+    email: cdo@nexum.lu
+
+servers:
+  - url: http://127.0.0.1:8000
+    description: Local development server
+  - url: https://govguard.nexum.lu
+    description: Production (future deployment)
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:    { type: string, format: email, example: "analyst@example.com" }
+        password: { type: string, format: password }
+
+    LoginResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        token_type:   { type: string, example: "bearer" }
+        role:         { type: string, enum: [Analyst, Manager, Partner] }
+        name:         { type: string }
+
+    ChatRequest:
+      type: object
+      required: [query]
+      properties:
+        query:    { type: string, example: "What is the data retention policy?" }
+        language: { type: string, enum: [EN, FR, DE], default: EN }
+
+    Source:
+      type: object
+      properties:
+        id:             { type: string, example: "POL-001" }
+        title:          { type: string }
+        excerpt:        { type: string }
+        score:          { type: number, format: float }
+        classification: { type: string, enum: [PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED, PARTNER_ONLY] }
+        category:       { type: string }
+
+    ChatResponse:
+      type: object
+      properties:
+        type:     { type: string, enum: [answer, no_answer, restricted, bm25_fallback] }
+        answer:   { type: string }
+        sources:  { type: array, items: { $ref: '#/components/schemas/Source' } }
+        model:    { type: string }
+        fallback: { type: boolean }
+
+    GapRequest:
+      type: object
+      required: [text]
+      properties:
+        text:  { type: string }
+        title: { type: string, default: "Untitled Document" }
+
+    GapScore:
+      type: object
+      properties:
+        dimension: { type: string }
+        score:     { type: integer, minimum: 0, maximum: 100 }
+        found:     { type: array, items: { type: string } }
+
+    GapResponse:
+      type: object
+      properties:
+        title:   { type: string }
+        scores:  { type: array, items: { $ref: '#/components/schemas/GapScore' } }
+        overall: { type: integer }
+        gaps:    { type: array, items: { type: string } }
+
+    LineageNode:
+      type: object
+      properties:
+        id:          { type: string }
+        label:       { type: string }
+        type:        { type: string }
+        relation:    { type: string }
+
+    LineageResponse:
+      type: object
+      properties:
+        node:         { type: string }
+        found:        { type: boolean }
+        label:        { type: string }
+        type:         { type: string }
+        description:  { type: string }
+        predecessors: { type: array, items: { $ref: '#/components/schemas/LineageNode' } }
+        successors:   { type: array, items: { $ref: '#/components/schemas/LineageNode' } }
+        docs:         { type: array, items: { type: object } }
+
+    GraphNode:
+      type: object
+      properties:
+        id:          { type: string }
+        label:       { type: string }
+        type:        { type: string }
+        color:       { type: string }
+        description: { type: string }
+        doc_count:   { type: integer }
+
+    GraphEdge:
+      type: object
+      properties:
+        from:  { type: string }
+        to:    { type: string }
+        label: { type: string }
+
+    GraphResponse:
+      type: object
+      properties:
+        nodes: { type: array, items: { $ref: '#/components/schemas/GraphNode' } }
+        edges: { type: array, items: { $ref: '#/components/schemas/GraphEdge' } }
+
+paths:
+  /api/login:
+    post:
+      operationId: loginUser
+      summary: Authenticate and receive a JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        "200":
+          description: JWT token and user metadata
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoginResponse' }
+        "401":
+          description: Invalid credentials
+
+  /api/chat:
+    post:
+      operationId: chatQuery
+      summary: Ask a governance question and receive an AI-generated answer with citations
+      description: >
+        Submits a natural language question to the RAG pipeline. The system retrieves
+        relevant governance documents, generates a grounded LLM answer, and returns
+        source citations. Role-based access control is enforced — restricted documents
+        are not returned to lower-clearance roles.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChatRequest' }
+      responses:
+        "200":
+          description: AI answer with source citations
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatResponse' }
+        "401":
+          description: Unauthenticated
+
+  /api/gap-analysis:
+    post:
+      operationId: runGapAnalysis
+      summary: Analyse a document for governance dimension coverage
+      description: >
+        Scores a document text against six governance dimensions
+        (Data Classification, Retention, Quality, Access Control, Lineage,
+        Regulatory Compliance) and identifies gaps below the 40% threshold.
+        Use this for automated policy document review workflows.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GapRequest' }
+      responses:
+        "200":
+          description: Gap analysis scores per dimension
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GapResponse' }
+
+  /api/lineage/{node_label}:
+    get:
+      operationId: getLineage
+      summary: Retrieve data lineage for a knowledge graph node
+      description: >
+        Traverses the governance knowledge graph to return a node's predecessors,
+        successors, and all governance documents that reference it.
+      parameters:
+        - in: path
+          name: node_label
+          required: true
+          schema: { type: string }
+          example: "Client_ACME"
+      responses:
+        "200":
+          description: Lineage graph for the requested node
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LineageResponse' }
+
+  /api/graph:
+    get:
+      operationId: getKnowledgeGraph
+      summary: Retrieve the full governance knowledge graph
+      description: >
+        Returns all nodes (clients, engagements, regulators, policies, domains, teams)
+        and edges from the NetworkX governance knowledge graph, enriched with
+        document reference counts per node.
+      responses:
+        "200":
+          description: Full knowledge graph
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GraphResponse' }
+
+  /api/graph/export:
+    get:
+      operationId: exportGraphJsonLD
+      summary: Export knowledge graph as JSON-LD
+      description: >
+        Returns the governance knowledge graph in JSON-LD format using the
+        govguard ontology namespace (https://govguard.nexum.lu/ontology#).
+        Suitable for RDF tooling and knowledge management platforms.
+      responses:
+        "200":
+          description: JSON-LD representation of the knowledge graph
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  "@context": { type: object }
+                  "@graph":   { type: array, items: { type: object } }
+
+  /api/ingest/status:
+    get:
+      operationId: getIngestStatus
+      summary: Check document ingestion status
+      responses:
+        "200":
+          description: Current ingestion statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_docs:    { type: integer }
+                  total_chunks:  { type: integer }
+                  chroma_chunks: { type: integer }
+                  last_indexed:  { type: string, format: date-time }

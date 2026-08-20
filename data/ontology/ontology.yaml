@@ -1,0 +1,49 @@
+classes:
+  Client:
+    description: Legal entity receiving Nexum Financial S.A. services
+  Engagement:
+    description: Contractual service provided to a client
+  Partner:
+    description: Responsible Nexum Financial S.A. partner
+  Regulator:
+    description: External authority supervising the client
+  Policy:
+    description: Governance policy or regulatory directive
+  Team:
+    description: Internal organisational team or office
+  Domain:
+    description: Business data domain with ownership and stewardship responsibilities
+
+relations:
+  - name: HAS_ENGAGEMENT
+    from: Client
+    to: Engagement
+  - name: ENGAGEMENT_OF
+    from: Engagement
+    to: Client
+  - name: SERVED_BY
+    from: Client
+    to: Partner
+  - name: SUBJECT_TO
+    from: Client
+    to: Regulator
+  - name: GOVERNED_BY
+    from: Domain
+    to: Team
+  - name: ENFORCED_BY
+    from: Policy
+    to: Team
+  - name: APPLIES_TO
+    from: Policy
+    to: Domain
+  - name: OVERSEES
+    from: Regulator
+    to: Domain
+
+constraints:
+  - id: C1
+    description: Each Engagement must be linked to exactly 1 Client
+  - id: C2
+    description: Each Client must have at least 1 Engagement
+  - id: C3
+    description: Each Domain must be governed by exactly 1 Team

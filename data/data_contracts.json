@@ -1,0 +1,189 @@
+[
+  {
+    "id": "DC-001",
+    "title": "Customer Master Data Contract",
+    "content": "This data contract governs the provision of Customer Master Data from the CRM system (Salesforce) to downstream consumers including Finance, Risk, and Analytics. Schema version: 3.2. SLA: 99.9% availability. Refresh: real-time via event stream. Breaking schema changes require 30-day notice. Covered fields: CustomerID, LegalName, Jurisdiction, RiskRating, RelationshipManager, OnboardingDate, KYC_Status. Consumer teams must not transform or redistribute without approval. Quality checks: 14 automated rules run pre-delivery. Breaches trigger immediate alert to the Client Data Steward.",
+    "owner": "Thomas Schmitt",
+    "classification": "INTERNAL",
+    "confidence_score": 97,
+    "tags": [
+      "customer",
+      "master data",
+      "CRM",
+      "Salesforce",
+      "contract",
+      "SLA",
+      "KYC",
+      "schema",
+      "real-time"
+    ],
+    "date": "2024-03-01",
+    "category": "Data Contract",
+    "version": "3.2",
+    "applicable_regulations": [
+      "GDPR",
+      "CSSF 12/552"
+    ],
+    "last_reviewed": "2025-11-01"
+  },
+  {
+    "id": "DC-002",
+    "title": "Finance Reporting Data Contract",
+    "content": "This contract defines the data interface between the Finance General Ledger (SAP) and the Regulatory Reporting platform. Producer: Finance Operations. Consumer: Regulatory Reporting team. Schema: FIN-RPT-v2.1. Covered fields: AccountCode, CostCenter, Amount, Currency, FiscalPeriod, ConsolidationEntity. Refresh: daily at 02:00 CET. Data must pass 14 automated quality checks before delivery. Issues escalate to the Finance Data Steward within 2 hours. Reconciliation reports are generated after each delivery run. Any variance above 0.01% triggers a hold and manual review.",
+    "owner": "Marie Dupont",
+    "classification": "RESTRICTED",
+    "confidence_score": 98,
+    "tags": [
+      "finance",
+      "reporting",
+      "SAP",
+      "GL",
+      "regulatory",
+      "contract",
+      "general ledger",
+      "fiscal",
+      "reconciliation"
+    ],
+    "date": "2024-02-20",
+    "category": "Data Contract",
+    "version": "2.1",
+    "applicable_regulations": [
+      "CSSF 12/552",
+      "BCBS 239"
+    ],
+    "last_reviewed": "2025-12-01"
+  },
+  {
+    "id": "DC-003",
+    "title": "Risk Data Aggregation Contract",
+    "content": "Governs the aggregation of risk exposure data from 7 source systems into the Enterprise Risk Data Warehouse. Compliant with BCBS 239 principles. Producer teams: Credit Risk, Market Risk, Operational Risk. Refresh: T+1 by 06:00 CET. Data completeness threshold: 99.5%. Breaches trigger automated alerts to the CRO dashboard and require same-day remediation reports. Lineage from each source system to the final aggregated figure must be traceable without gaps. End-to-end reconciliation against source systems is performed weekly.",
+    "owner": "Antoine Leclerc",
+    "classification": "RESTRICTED",
+    "confidence_score": 93,
+    "tags": [
+      "risk",
+      "aggregation",
+      "BCBS239",
+      "credit risk",
+      "market risk",
+      "warehouse",
+      "contract",
+      "CRO",
+      "lineage"
+    ],
+    "date": "2024-01-25",
+    "category": "Data Contract",
+    "version": "1.4",
+    "applicable_regulations": [
+      "BCBS 239",
+      "CSSF 12/552"
+    ],
+    "last_reviewed": "2025-10-01"
+  },
+  {
+    "id": "DC-004",
+    "title": "HR People Data Contract",
+    "content": "This contract governs the transfer of employee data from the HR Information System (Workday) to the Access Management platform and the People Analytics dashboard. PII handling is mandatory per POL-003 and requires DPIA sign-off. Transferred fields: EmployeeID, Department, Grade, ManagerID, ContractType, Location. Termination events trigger immediate automated deprovisioning within 2 hours. Consumers must not retain data beyond 48 hours without documented approval. All access to this contract requires Manager-level clearance or above. Quarterly audits compare transferred records against the authoritative Workday source.",
+    "owner": "Sophie Martin",
+    "classification": "CONFIDENTIAL",
+    "confidence_score": 96,
+    "tags": [
+      "HR",
+      "employee",
+      "people data",
+      "Workday",
+      "PII",
+      "contract",
+      "deprovisioning",
+      "access management",
+      "DPIA"
+    ],
+    "date": "2024-03-15",
+    "category": "Data Contract",
+    "version": "2.0",
+    "applicable_regulations": [
+      "GDPR",
+      "CNPD"
+    ],
+    "last_reviewed": "2025-11-15"
+  },
+  {
+    "id": "DC-005",
+    "title": "Client Transaction History Contract",
+    "content": "Governs the exposure of pseudonymised transaction data to the Analytics team for behavioural modelling. Data must be pseudonymised at source before delivery using approved tokenisation. Retention limit: 90 days in the analytics environment. Re-identification is strictly prohibited and constitutes a data breach reportable to the CNPD within 72 hours. Model outputs derived from this contract must be reviewed by the Data Ethics board before deployment. Full audit trail of all data access events is mandatory. This contract is Partner-only due to the sensitivity of the underlying transaction patterns.",
+    "owner": "Jean-Luc Bernard",
+    "classification": "PARTNER_ONLY",
+    "confidence_score": 91,
+    "tags": [
+      "transaction",
+      "analytics",
+      "pseudonymisation",
+      "behavioural",
+      "audit",
+      "ethics",
+      "contract",
+      "modelling",
+      "CNPD"
+    ],
+    "date": "2024-04-05",
+    "category": "Data Contract",
+    "version": "1.1",
+    "applicable_regulations": [
+      "GDPR",
+      "CNPD"
+    ],
+    "last_reviewed": "2025-09-01"
+  },
+  {
+    "id": "DC-006",
+    "title": "Market Data Feed Contract",
+    "content": "Defines the terms for consuming Bloomberg and Refinitiv market data feeds within Nexum Financial S.A. systems. Permissioned use only: valuation, risk calculation, and client reporting. Redistribution to third parties is strictly prohibited per vendor agreements. Data latency SLA: under 500ms for real-time feeds. End-of-day feeds delivered by 18:30 CET. License compliance audits are conducted quarterly by the Data Licensing team. Any new use case consuming market data must be approved by the Data Licensing team within 10 business days.",
+    "owner": "Thomas Schmitt",
+    "classification": "INTERNAL",
+    "confidence_score": 94,
+    "tags": [
+      "market data",
+      "Bloomberg",
+      "Refinitiv",
+      "feed",
+      "license",
+      "valuation",
+      "contract",
+      "real-time",
+      "compliance"
+    ],
+    "date": "2024-02-10",
+    "category": "Data Contract",
+    "version": "2.3",
+    "applicable_regulations": [],
+    "last_reviewed": "2025-08-01"
+  },
+  {
+    "id": "DC-007",
+    "title": "Regulatory Reporting Data Contract",
+    "content": "Governs data flows from all operational systems to the Central Regulatory Reporting Hub for submission to CSSF, EBA, and CNPD. Covers COREP, FINREP, AnaCredit, and GDPR Article 30 records-of-processing reports. Data must be certified by the relevant Domain Data Steward before submission. Audit trails must be immutable and retained for 10 years. Any restatement requires written approval from the CFO and CDO. Automated validation rules cover 200+ checks aligned with EBA Data Point Model. Submission SLAs are defined per regulatory calendar and monitored by the CDO.",
+    "owner": "Marie Dupont",
+    "classification": "RESTRICTED",
+    "confidence_score": 97,
+    "tags": [
+      "regulatory reporting",
+      "CSSF",
+      "EBA",
+      "COREP",
+      "FINREP",
+      "AnaCredit",
+      "contract",
+      "audit",
+      "CNPD"
+    ],
+    "date": "2024-05-10",
+    "category": "Data Contract",
+    "version": "1.0",
+    "applicable_regulations": [
+      "CSSF 12/552",
+      "BCBS 239",
+      "GDPR"
+    ],
+    "last_reviewed": "2025-10-15"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.0/schema.json",
+  "version": "v1.0",
+  "name": "GovGuard",
+  "description": "AI-powered Data Governance assistant for the Nexum Financial S.A. Central Data Office. Answers questions on governance policies, glossary terms, data contracts, regulatory compliance (GDPR, CSSF, DORA), and data lineage. Runs automated policy gap analysis and knowledge graph traversal.",
+  "instructions": "file:instructions.md",
+  "capabilities": [
+    {
+      "name": "OneDriveAndSharePoint",
+      "items_by_sharepoint_ids": []
+    }
+  ],
+  "actions": [
+    {
+      "id": "govguard-api",
+      "file": "plugin.json"
+    }
+  ],
+  "conversation_starters": [
+    { "title": "Data Retention",    "text": "What is the data retention policy for client data?" },
+    { "title": "GDPR Compliance",   "text": "What GDPR obligations apply to personal data processing?" },
+    { "title": "Access Control",    "text": "Who can access RESTRICTED classification data?" },
+    { "title": "Gap Analysis",      "text": "Analyse this document for governance gaps: [paste text]" },
+    { "title": "Data Lineage",      "text": "Show me the lineage for the Finance Data Domain" },
+    { "title": "Data Contracts",    "text": "What SLAs apply to the Customer Master Data contract?" }
+  ]
+}

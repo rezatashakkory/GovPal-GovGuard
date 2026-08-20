@@ -1,0 +1,138 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.2/schema.json",
+  "schema_version": "v2.2",
+  "name_for_human": "GovGuard",
+  "name_for_model": "govguard",
+  "description_for_human": "Data Governance assistant — queries governance policies, glossary, data contracts, lineage, and gap analysis for the Nexum Financial S.A. CDO team.",
+  "description_for_model": "Use this plugin to answer user questions about data governance, GDPR, CSSF, DORA, data retention, classification, quality, access control, data lineage, and data contracts. Call chatQuery for Q&A, runGapAnalysis for policy document review, getLineage for lineage traversal, and getKnowledgeGraph for the full governance ontology.",
+  "contact_email": "cdo@nexum.lu",
+  "legal_info_url": "https://govguard.nexum.lu/legal",
+  "logo_url": "https://govguard.nexum.lu/static/logo.png",
+  "privacy_policy_url": "https://govguard.nexum.lu/privacy",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "openapi.yaml"
+  },
+  "functions": [
+    {
+      "name": "chatQuery",
+      "description": "Ask a natural language question about data governance policies, glossary terms, or data contracts. Returns an AI-generated answer grounded in retrieved documents with source citations.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title":    "$.sources[0].title",
+            "subtitle": "$.model",
+            "url":      ""
+          },
+          "static_template": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "${answer}",
+                "wrap": true,
+                "size": "Default"
+              },
+              {
+                "type": "TextBlock",
+                "text": "**Sources**",
+                "weight": "Bolder",
+                "spacing": "Medium"
+              },
+              {
+                "type": "FactSet",
+                "facts": {
+                  "$data": "${sources}",
+                  "title": "${id}: ${title}",
+                  "value": "${classification} · ${$round(score * 100)}% match"
+                }
+              },
+              {
+                "type": "TextBlock",
+                "text": "Model: ${model}",
+                "isSubtle": true,
+                "size": "Small"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "runGapAnalysis",
+      "description": "Analyse a governance policy document for coverage gaps across six dimensions: Data Classification, Data Retention, Data Quality, Access Control, Data Lineage, and Regulatory Compliance. Use when a user pastes or shares a document for review.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title":    "$.title",
+            "subtitle": "Overall score: ${overall}%"
+          },
+          "static_template": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.5",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "**Gap Analysis: ${title}**",
+                "weight": "Bolder",
+                "size": "Medium"
+              },
+              {
+                "type": "TextBlock",
+                "text": "Overall Score: **${overall}%**",
+                "color": "${if(overall >= 70, 'Good', if(overall >= 40, 'Warning', 'Attention'))}"
+              },
+              {
+                "type": "FactSet",
+                "facts": {
+                  "$data": "${scores}",
+                  "title": "${dimension}",
+                  "value": "${score}%"
+                }
+              },
+              {
+                "type": "TextBlock",
+                "text": "**Gaps identified:** ${join(gaps, ', ')}",
+                "color": "Attention",
+                "isVisible": "${count(gaps) > 0}"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "getLineage",
+      "description": "Retrieve data lineage for a knowledge graph node. Use when users ask about data origins, upstream/downstream relationships, or which documents reference a specific entity.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title":    "$.label",
+            "subtitle": "Type: ${type}"
+          }
+        }
+      }
+    },
+    {
+      "name": "getKnowledgeGraph",
+      "description": "Retrieve the full governance knowledge graph with nodes and edges. Use when users ask for an overview of governance relationships, domains, regulators, or engagement structures.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "Governance Knowledge Graph"
+          }
+        }
+      }
+    }
+  ]
+}
