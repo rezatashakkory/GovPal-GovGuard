@@ -1,5 +1,7 @@
 # GovPal-GovGuard
 
+> **New here? Check the [`Screenshots/`](Screenshots/) folder first** to see the chatbot in action before reading further or setting anything up.
+
 An AI-powered, retrieval-augmented (RAG) chatbot proof of concept for data governance teams. It lets users ask natural-language questions about governance policies, glossary terms, and data contracts, and returns cited, role-aware answers — running entirely on local infrastructure with no external API calls.
 
 > This is a Phase 1 proof-of-concept built with synthetic/demo data for a fictional organisation ("Nexum Financial S.A."). No real client, employee, or company data is included.

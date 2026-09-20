@@ -38,10 +38,14 @@ FULL ONE-LINERS  (paste into ANY fresh PowerShell terminal, e.g. after a
 reboot -- no need to cd or activate the venv manually first, it's all included):
 
   -- Option A: MISTRAL (default, higher quality, ~60s first response) --
-cd "<path-to-project>/GovPal-GovGuard"; $p=(Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue).OwningProcess; if($p){Stop-Process -Id $p -Force}; ./.venv/Scripts/Activate.ps1; $env:OLLAMA_LLM_MODEL="mistral"; uvicorn app:app --host 127.0.0.1 --port 8000
+****cd "<path-to-project>/GovPal-GovGuard"; $p=(Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue).OwningProcess; if($p){Stop-Process -Id $p -Force}; ./.venv/Scripts/Activate.ps1; $env:OLLAMA_LLM_MODEL="mistral"; uvicorn app:app --host 127.0.0.1 --port 8000
+$env:OLLAMA_LLM_MODEL="mistral"; .\.venv\Scripts\uvicorn.exe app:app --host 127.0.0.1 --port 8000
+
 
   -- Option B: PHI3 (faster, ~30s response, slightly lower quality) --
-cd "<path-to-project>/GovPal-GovGuard"; $p=(Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue).OwningProcess; if($p){Stop-Process -Id $p -Force}; ./.venv/Scripts/Activate.ps1; $env:OLLAMA_LLM_MODEL="phi3:mini"; uvicorn app:app --host 127.0.0.1 --port 8000
+****cd "<path-to-project>/GovPal-GovGuard"; $p=(Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue).OwningProcess; if($p){Stop-Process -Id $p -Force}; ./.venv/Scripts/Activate.ps1; $env:OLLAMA_LLM_MODEL="phi3:mini"; uvicorn app:app --host 127.0.0.1 --port 8000
+$env:OLLAMA_LLM_MODEL="phi3:mini"; .\.venv\Scripts\uvicorn.exe app:app --host 127.0.0.1 --port 8000
+
 
   Run only ONE of the two. The $p check safely skips the kill step when
   port 8000 is already free (the old one-liner crashed with "Cannot bind
