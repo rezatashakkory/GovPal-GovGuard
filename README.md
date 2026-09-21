@@ -1,6 +1,6 @@
 # GovPal-GovGuard
 
-> **New here? Check the [`Screenshots/`](Screenshots/) folder first** to see the chatbot in action before reading further or setting anything up.
+> **New here? Check the [`Preview/`](Preview/) folder first** to see the chatbot in action before reading further or setting anything up.
 
 An AI-powered, retrieval-augmented (RAG) chatbot proof of concept for data governance teams. It lets users ask natural-language questions about governance policies, glossary terms, and data contracts, and returns cited, role-aware answers — running entirely on local infrastructure with no external API calls.
 
